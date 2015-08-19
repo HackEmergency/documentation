@@ -27,5 +27,17 @@ db.tweets.aggregate([
                      { $group : { _id: "$user.id", total: { $sum: 1} } },
                      { $sort : { total: -1 } }
                    ])
+# this one doesn't work either
+db.tweets.aggregate([
+                     { $project : { geo_e: {$ifNull: ["$coordinates",1] } } },  # creates a field "geo_e" 1 if null
+                     { $group : { _id: "$user.id", total: { $sum: "$geo_e" } } },
+                     { $match : { total : { $gte: 1} } },
+                     { $sort : { total: -1 } }
+                   ])
+                   
+# working with polygons
+# this doesn't seem to work https://blog.codecentric.de/en/2013/03/mongodb-geospatial-indexing-search-geojson-point-linestring-polygon/
+# seems like we need to load in geoJSON
+# the query whether points are in which polygon
 
 
